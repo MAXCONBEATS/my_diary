@@ -1,0 +1,48 @@
+@startuml
+hide circle
+skinparam linetype ortho
+
+' Определение таблиц
+entity "categories" {
+  *id : INTEGER <<PK, AI>>
+  --
+  name : TEXT <<NOT NULL>>
+}
+
+entity "events" {
+  *id : INTEGER <<PK, AI>>
+  --
+  title : TEXT
+  description : TEXT
+  start_time : INTEGER
+  end_time : INTEGER
+  color : TEXT
+  is_recurring : INTEGER
+  recurrence_rule : TEXT
+  reminder_minutes_before : INTEGER
+}
+
+entity "notes" {
+  *id : INTEGER <<PK, AI>>
+  --
+  title : TEXT
+  content : TEXT
+  category_id : INTEGER <<FK>>
+  created_at : INTEGER
+  linked_date : INTEGER
+}
+
+entity "event_notes" {
+  *event_id : INTEGER <<PK, FK>>
+  *note_id : INTEGER <<PK, FK>>
+}
+
+' Связи
+categories ||--o{ notes : "SET NULL"
+notes ||..o{ event_notes : "CASCADE"
+events ||..o{ event_notes : "CASCADE"
+
+note right of notes : Индексы:\n- category_id\n- linked_date
+note right of events : Индексы:\n- start_time
+
+@enduml
